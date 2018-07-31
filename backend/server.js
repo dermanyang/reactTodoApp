@@ -2,11 +2,12 @@ const express = require ('express');
 const app = express();
 const dbRoutes = require('./routes/databaseAccess.js');
 const authRoutes = require('./routes/authorization.js');
-
+var bodyParser = require('body-parser');
 
 
 //make build folder publicly available
 app.use(express.static('build'));
+app.use(bodyParser.json());
 app.use('/db', dbRoutes);
 app.use('/auth', authRoutes);
 

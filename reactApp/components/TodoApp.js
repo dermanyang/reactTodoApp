@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TodoList from './TodoList';
 import InputLine from './InputLine';
+import axios from 'axios';
+const dbUrl = "http://localhost:3000/db";
 
 //temporary data
 var dummyData = [
@@ -26,18 +28,17 @@ class TodoApp extends React.Component {
   }
 
   addItem(name){
-    // console.log(name);
-    var arr = this.state.todos.slice();
-    var task = {
-      taskText: name,
-      completed: false //set default to not completed
-    }
-    arr.push(task) ;
-    console.log(arr);
-    this.setState({
-      todos: arr
-    })
+    console.log('ADDNAME', name);
+    console.log('sending post request...');
+    axios.post(dbUrl + '/add', {name})
+      .then(function (response) {
+       console.log(response);
+      })
+      .catch(function (error) {
+      console.log(error);
+    });
   }
+
   removeItem(name) {
     var arr = this.state.todos.slice();
     var newArr = arr.filter(obj => obj.taskText != name)
