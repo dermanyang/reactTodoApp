@@ -26,7 +26,7 @@ class TodoApp extends React.Component {
   }
 
   addItem(name){
-    console.log(name);
+    // console.log(name);
     var arr = this.state.todos.slice();
     var task = {
       taskText: name,
@@ -38,12 +38,34 @@ class TodoApp extends React.Component {
       todos: arr
     })
   }
+  removeItem(name) {
+    var arr = this.state.todos.slice();
+    var newArr = arr.filter(obj => obj.taskText != name)
+    this.setState({
+      todos: newArr
+    })
+  }
+  crossItem(name) {
+    //strikethrough i.e. set
+    var arr = this.state.todos.slice();
+    for (var elem in arr) {
+      if (arr[elem].taskText == name) {
+        arr[elem].completed = !arr[elem].completed;
+        break;
+      }
+    }
+
+    this.setState({
+      todos: arr,
+    })
+  }
 
   render() {
     return(
       <div>
-        <InputLine addItem={this.addItem.bind(this)}/>
-        <TodoList todos={this.state.todos} />
+        <InputLine addItem={this.addItem.bind(this)} />
+        <TodoList todos={this.state.todos} crossItem={this.crossItem.bind(this)}
+          removeItem={this.removeItem.bind(this)}/>
       </div>
     )
   }
