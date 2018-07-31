@@ -1643,6 +1643,7 @@ var TodoApp = function (_React$Component) {
     _this.state = {
       todos: []
     };
+    _this.setState = _this.setState.bind(_this);
     return _this;
   }
 
@@ -1657,9 +1658,15 @@ var TodoApp = function (_React$Component) {
     key: 'addItem',
     value: function addItem(name) {
       console.log('ADDNAME', name);
-      console.log('sending post request');
+      console.log('sending post request...');
       _axios2.default.post(dbUrl + '/add', { name: name }).then(function (response) {
-        console.log(response);
+        var _this2 = this;
+
+        (function () {
+          _this2.setState({
+            todos: _this2.state.todos.concat(response.data)
+          });
+        });
       }).catch(function (error) {
         console.log(error);
       });

@@ -19,6 +19,7 @@ class TodoApp extends React.Component {
     this.state = {
       todos: [],
     }
+    this.setState = this.setState.bind(this);
   }
 
   componentDidMount() {
@@ -32,7 +33,9 @@ class TodoApp extends React.Component {
     console.log('sending post request...');
     axios.post(dbUrl + '/add', {name})
       .then(function (response) {
-       console.log(response);
+        () => {this.setState({
+         todos: this.state.todos.concat(response.data)
+       });}
       })
       .catch(function (error) {
       console.log(error);
