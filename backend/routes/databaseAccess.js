@@ -19,6 +19,13 @@ router.post('/add', (req,res)=> {
     })
 });
 
+router.get('/all', (req,res)=> {
+  TodoItem.find()
+  .exec(function(err, todos){
+    res.send(todos);
+  })
+});
+
 router.get('/toggle', (req,res)=> {
   res.send('Hello');
 });

@@ -6,22 +6,22 @@ class TodoList extends React.Component {
     super(props);
   }
 
-  handleTick(name) {
-    console.log('remove item');
-    this.props.crossItem(name);
+  handleTick(id) {
+    console.log('cross item');
+    this.props.crossItem(id);
   }
 
-  handleClick(name) {
+  handleClick(id) {
     console.log('remove item');
-    this.props.removeItem(name);
+    this.props.removeItem(id);
   }
 
   render(){
     return(
       <ul>
         {this.props.todos.map((item, index) => item.completed ?
-          <strike><li key={index}><button onClick={()=>this.handleTick(item.taskText)}>✓</button><button onClick={()=>this.handleClick(item.taskText)} >X</button>{' '}{item.taskText}</li></strike> :
-            <li key={index}><button onClick={()=>this.handleTick(item.taskText)}>✓</button><button onClick={()=>this.handleClick(item.taskText)}   >X</button>{' '}{item.taskText}</li>
+          <strike><li key={todo.id}><button onClick={()=>this.handleTick(item.id)}>✓</button><button onClick={()=>this.handleClick(item.id)} >X</button>{' '}{item.taskText}</li></strike> :
+            <li key={todo.id}><button onClick={()=>this.handleTick(item.id)}>✓</button><button onClick={()=>this.handleClick(item.id)}   >X</button>{' '}{item.taskText}</li>
           )}
       </ul>
     );

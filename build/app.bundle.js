@@ -1630,7 +1630,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var dbUrl = "http://localhost:3000/db";
 
 //temporary data
-var dummyData = [{ taskText: "Wash the dishes", completed: true }, { taskText: "Do homework", completed: false }, { taskText: "Walk the dog", completed: true }, { taskText: "Do laundry", completed: false }];
+// var dummyData = [
+//   {taskText: "Wash the dishes", completed:true},
+//   {taskText: "Do homework", completed:false},
+//   {taskText:"Walk the dog", completed:true},
+//   {taskText: "Do laundry", completed:false}
+// ]
 
 var TodoApp = function (_React$Component) {
   _inherits(TodoApp, _React$Component);
@@ -1650,21 +1655,34 @@ var TodoApp = function (_React$Component) {
   _createClass(TodoApp, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.setState({
-        todos: dummyData
+      //1) grab all items from mongo database
+      console.log('component dDID mount');
+      _axios2.default.get(dbUrl + '/all').then(function (data) {
+        var _this2 = this;
+
+        console.log('data response', data.data);
+        (function () {
+          return _this2.setState({
+            todos: data.response
+          });
+        });
+      }).catch(function (error) {
+        console.log(error);
       });
     }
   }, {
     key: 'addItem',
     value: function addItem(name) {
+      //2) add item into mongo database
+      //DONE
       console.log('ADDNAME', name);
       console.log('sending post request...');
       _axios2.default.post(dbUrl + '/add', { name: name }).then(function (response) {
-        var _this2 = this;
+        var _this3 = this;
 
         (function () {
-          _this2.setState({
-            todos: _this2.state.todos.concat(response.data)
+          _this3.setState({
+            todos: _this3.state.todos.concat(response.data)
           });
         });
       }).catch(function (error) {
@@ -1673,29 +1691,26 @@ var TodoApp = function (_React$Component) {
     }
   }, {
     key: 'removeItem',
-    value: function removeItem(name) {
-      var arr = this.state.todos.slice();
-      var newArr = arr.filter(function (obj) {
-        return obj.taskText != name;
-      });
-      this.setState({
-        todos: newArr
+    value: function removeItem(id) {
+      //3) remove item from mongo database
+      _axios2.default.post(dbUrl + '/remove', id).then(function (response) {
+        this.setState({
+          todos: response.data
+        });
+      }).catch(function (error) {
+        console.log(error);
       });
     }
   }, {
     key: 'crossItem',
-    value: function crossItem(name) {
-      //strikethrough i.e. set
-      var arr = this.state.todos.slice();
-      for (var elem in arr) {
-        if (arr[elem].taskText == name) {
-          arr[elem].completed = !arr[elem].completed;
-          break;
-        }
-      }
-
-      this.setState({
-        todos: arr
+    value: function crossItem(id) {
+      //4) strikethrough i.e. set item.completed = !item.completed
+      _axios2.default.post(dbUrl + '/toggle', id).then(function (response) {
+        this.setState({
+          todos: response.data
+        });
+      }).catch(function (error) {
+        console.log(error);
       });
     }
   }, {
@@ -2724,15 +2739,15 @@ var TodoList = function (_React$Component) {
 
   _createClass(TodoList, [{
     key: 'handleTick',
-    value: function handleTick(name) {
-      console.log('remove item');
-      this.props.crossItem(name);
+    value: function handleTick(id) {
+      console.log('cross item');
+      this.props.crossItem(id);
     }
   }, {
     key: 'handleClick',
-    value: function handleClick(name) {
+    value: function handleClick(id) {
       console.log('remove item');
-      this.props.removeItem(name);
+      this.props.removeItem(id);
     }
   }, {
     key: 'render',
@@ -2748,18 +2763,18 @@ var TodoList = function (_React$Component) {
             null,
             _react2.default.createElement(
               'li',
-              { key: index },
+              { key: todo.id },
               _react2.default.createElement(
                 'button',
                 { onClick: function onClick() {
-                    return _this2.handleTick(item.taskText);
+                    return _this2.handleTick(item.id);
                   } },
                 '\u2713'
               ),
               _react2.default.createElement(
                 'button',
                 { onClick: function onClick() {
-                    return _this2.handleClick(item.taskText);
+                    return _this2.handleClick(item.id);
                   } },
                 'X'
               ),
@@ -2768,18 +2783,18 @@ var TodoList = function (_React$Component) {
             )
           ) : _react2.default.createElement(
             'li',
-            { key: index },
+            { key: todo.id },
             _react2.default.createElement(
               'button',
               { onClick: function onClick() {
-                  return _this2.handleTick(item.taskText);
+                  return _this2.handleTick(item.id);
                 } },
               '\u2713'
             ),
             _react2.default.createElement(
               'button',
               { onClick: function onClick() {
-                  return _this2.handleClick(item.taskText);
+                  return _this2.handleClick(item.id);
                 } },
               'X'
             ),
